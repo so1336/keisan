@@ -2,40 +2,55 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>メル 計算ツール（中央揃え＆整形）</title>
+  <title>メル 計算ツール（横並びレイアウト）</title>
   <style>
     body {
       font-family: sans-serif;
-      margin: 20px;
       display: flex;
       justify-content: center;
+      padding: 20px;
     }
 
     .container {
       text-align: center;
-      max-width: 500px;
+      max-width: 600px;
       width: 100%;
     }
 
-    input {
-      width: 100px;
-      margin: 5px auto;
-      text-align: center;
-      display: block;
+    .form-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
     }
 
-    label {
+    .form-row label {
+      width: 120px;
+      text-align: right;
+      margin-right: 10px;
       font-weight: bold;
-      display: block;
-      margin-top: 10px;
     }
 
-    .section {
-      margin-bottom: 25px;
+    .form-row input {
+      width: 120px;
+      text-align: center;
+      padding: 4px;
+    }
+
+    .warning {
+      color: red;
+      font-size: 0.85em;
+      margin-top: 3px;
+      display: none;
+    }
+
+    .result {
+      margin-top: 20px;
     }
 
     .result p {
-      font-size: 1.2em;
+      font-size: 1.1em;
       margin: 5px 0;
     }
 
@@ -43,16 +58,9 @@
       font-weight: bold;
     }
 
-    .warning {
-      color: red;
-      font-size: 0.9em;
-      margin: 0;
-      display: none;
-    }
-
     button {
       margin-top: 15px;
-      padding: 5px 15px;
+      padding: 6px 20px;
     }
   </style>
 </head>
@@ -61,39 +69,47 @@
 <div class="container">
   <h1>🎪 メル 計算ツール</h1>
 
-  <div class="section">
+  <div class="form-row">
     <label for="numPeople">体験者の人数：</label>
     <input type="text" id="numPeople" placeholder="例: 10" oninput="validateAndCalculate('numPeople')">
-    <p id="warn-numPeople" class="warning"></p>
   </div>
+  <p id="warn-numPeople" class="warning"></p>
 
-  <div class="section">
-    <p>クローズ時のメル通貨の枚数：</p>
+  <p>クローズ時のメル通貨の枚数：</p>
 
+  <div class="form-row">
     <label for="m1">1メル：</label>
     <input type="text" id="m1" placeholder="例: 3" oninput="validateAndCalculate('m1')">
-    <p id="warn-m1" class="warning"></p>
+  </div>
+  <p id="warn-m1" class="warning"></p>
 
+  <div class="form-row">
     <label for="m5">5メル：</label>
     <input type="text" id="m5" placeholder="例: 2" oninput="validateAndCalculate('m5')">
-    <p id="warn-m5" class="warning"></p>
+  </div>
+  <p id="warn-m5" class="warning"></p>
 
+  <div class="form-row">
     <label for="m10">10メル：</label>
     <input type="text" id="m10" placeholder="例: 4" oninput="validateAndCalculate('m10')">
-    <p id="warn-m10" class="warning"></p>
+  </div>
+  <p id="warn-m10" class="warning"></p>
 
+  <div class="form-row">
     <label for="m20">20メル：</label>
     <input type="text" id="m20" placeholder="例: 1" oninput="validateAndCalculate('m20')">
-    <p id="warn-m20" class="warning"></p>
+  </div>
+  <p id="warn-m20" class="warning"></p>
 
+  <div class="form-row">
     <label for="m50">50メル：</label>
     <input type="text" id="m50" placeholder="例: 0" oninput="validateAndCalculate('m50')">
-    <p id="warn-m50" class="warning"></p>
   </div>
+  <p id="warn-m50" class="warning"></p>
 
   <button onclick="resetAll()">リセット</button>
 
-  <div class="section result">
+  <div class="result">
     <h2>結果</h2>
     <p>初期金額（お釣り）：<span class="highlight">2950</span> メル</p>
     <p>理論上の合計金額：<span id="expected" class="highlight">0</span> メル</p>
@@ -127,7 +143,7 @@
     let values = {};
     for (const id of ids) {
       const val = document.getElementById(id).value.trim();
-      if (!isHalfWidthNumber(val)) return; // 入力エラーがあれば中止
+      if (!isHalfWidthNumber(val)) return;
       values[id] = parseInt(val) || 0;
     }
 
