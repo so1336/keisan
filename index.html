@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>メル 計算ツール（リアルタイム対応）</title>
+  <title>メル 計算ツール（バリデーション対応）</title>
   <style>
     body {
       font-family: sans-serif;
@@ -21,24 +21,46 @@
     .highlight {
       font-weight: bold;
     }
+    .warning {
+      color: red;
+      font-size: 0.9em;
+      margin-top: 0;
+      margin-bottom: 5px;
+    }
   </style>
 </head>
 <body>
 
-  <h1>🎪 メル 計算ツール（リアルタイム対応）</h1>
+  <h1>🎪 メル 計算ツール（バリデーション対応）</h1>
 
   <div class="section">
-    <label>体験者の人数：</label>
-    <input type="number" id="numPeople" min="0" value="0" oninput="calculate()">
+    <label>体験者の人数：</label><br>
+    <input type="text" id="numPeople" placeholder="例: 10" oninput="validateAndCalculate('numPeople')">
+    <p id="warn-numPeople" class="warning" style="display: none;"></p>
   </div>
 
   <div class="section">
     <p>クローズ時のメル通貨の枚数を入力：</p>
-    <label>1メル：<input type="number" id="m1" min="0" value="0" oninput="calculate()"></label><br>
-    <label>5メル：<input type="number" id="m5" min="0" value="0" oninput="calculate()"></label><br>
-    <label>10メル：<input type="number" id="m10" min="0" value="0" oninput="calculate()"></label><br>
-    <label>20メル：<input type="number" id="m20" min="0" value="0" oninput="calculate()"></label><br>
-    <label>50メル：<input type="number" id="m50" min="0" value="0" oninput="calculate()"></label>
+
+    <label>1メル：</label><br>
+    <input type="text" id="m1" placeholder="例: 3" oninput="validateAndCalculate('m1')">
+    <p id="warn-m1" class="warning" style="display: none;"></p>
+
+    <label>5メル：</label><br>
+    <input type="text" id="m5" placeholder="例: 2" oninput="validateAndCalculate('m5')">
+    <p id="warn-m5" class="warning" style="display: none;"></p>
+
+    <label>10メル：</label><br>
+    <input type="text" id="m10" placeholder="例: 4" oninput="validateAndCalculate('m10')">
+    <p id="warn-m10" class="warning" style="display: none;"></p>
+
+    <label>20メル：</label><br>
+    <input type="text" id="m20" placeholder="例: 1" oninput="validateAndCalculate('m20')">
+    <p id="warn-m20" class="warning" style="display: none;"></p>
+
+    <label>50メル：</label><br>
+    <input type="text" id="m50" placeholder="例: 0" oninput="validateAndCalculate('m50')">
+    <p id="warn-m50" class="warning" style="display: none;"></p>
   </div>
 
   <button onclick="resetAll()">リセット</button>
@@ -52,18 +74,37 @@
   </div>
 
   <script>
+    function isHalfWidthNumber(value) {
+      return /^[0-9]*$/.test(value);
+    }
+
+    function validateAndCalculate(id) {
+      const input = document.getElementById(id);
+      const warning = document.getElementById("warn-" + id);
+      const value = input.value.trim();
+
+      if (!isHalfWidthNumber(value)) {
+        warning.textContent = "半角数字で入力してください";
+        warning.style.display = "block";
+      } else {
+        warning.textContent = "";
+        warning.style.display = "none";
+        calculate();
+      }
+    }
+
     function calculate() {
-      const numPeople = parseInt(document.getElementById("numPeople").value) || 0;
+      const ids = ["numPeople", "m1", "m5", "m10", "m20", "m50"];
+      let values = {};
+      for (const id of ids) {
+        const val = document.getElementById(id).value.trim();
+        if (!isHalfWidthNumber(val)) return; // 不正入力があれば中断
+        values[id] = parseInt(val) || 0;
+      }
+
       const initial = 2950;
-      const expected = initial + (numPeople * 8);
-
-      const m1 = parseInt(document.getElementById("m1").value) || 0;
-      const m5 = parseInt(document.getElementById("m5").value) || 0;
-      const m10 = parseInt(document.getElementById("m10").value) || 0;
-      const m20 = parseInt(document.getElementById("m20").value) || 0;
-      const m50 = parseInt(document.getElementById("m50").value) || 0;
-
-      const actual = m1 * 1 + m5 * 5 + m10 * 10 + m20 * 20 + m50 * 50;
+      const expected = initial + (values["numPeople"] * 8);
+      const actual = values["m1"] * 1 + values["m5"] * 5 + values["m10"] * 10 + values["m20"] * 20 + values["m50"] * 50;
       const difference = actual - expected;
 
       document.getElementById("expected").textContent = expected;
@@ -72,17 +113,15 @@
     }
 
     function resetAll() {
-      document.getElementById("numPeople").value = 0;
-      document.getElementById("m1").value = 0;
-      document.getElementById("m5").value = 0;
-      document.getElementById("m10").value = 0;
-      document.getElementById("m20").value = 0;
-      document.getElementById("m50").value = 0;
-      calculate();
+      const ids = ["numPeople", "m1", "m5", "m10", "m20", "m50"];
+      for (const id of ids) {
+        document.getElementById(id).value = "";
+        document.getElementById("warn-" + id).style.display = "none";
+      }
+      document.getElementById("expected").textContent = "0";
+      document.getElementById("actual").textContent = "0";
+      document.getElementById("difference").textContent = "0";
     }
-
-    // 初期表示も0で出す
-    calculate();
   </script>
 
 </body>
