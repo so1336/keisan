@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>メル 計算ツール（誤差判定付き）</title>
+  <title>メル 計算ツール（リアルタイム対応）</title>
   <style>
     body {
       font-family: sans-serif;
@@ -15,34 +15,40 @@
     .section {
       margin-bottom: 20px;
     }
+    .result p {
+      font-size: 1.2em;
+    }
+    .highlight {
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
 
-  <h1>🎪 メル 計算ツール</h1>
+  <h1>🎪 メル 計算ツール（リアルタイム対応）</h1>
 
   <div class="section">
     <label>体験者の人数：</label>
-    <input type="number" id="numPeople" min="0" value="0">
+    <input type="number" id="numPeople" min="0" value="0" oninput="calculate()">
   </div>
 
   <div class="section">
     <p>クローズ時のメル通貨の枚数を入力：</p>
-    <label>1メル：<input type="number" id="m1" min="0" value="0"></label><br>
-    <label>5メル：<input type="number" id="m5" min="0" value="0"></label><br>
-    <label>10メル：<input type="number" id="m10" min="0" value="0"></label><br>
-    <label>20メル：<input type="number" id="m20" min="0" value="0"></label><br>
-    <label>50メル：<input type="number" id="m50" min="0" value="0"></label>
+    <label>1メル：<input type="number" id="m1" min="0" value="0" oninput="calculate()"></label><br>
+    <label>5メル：<input type="number" id="m5" min="0" value="0" oninput="calculate()"></label><br>
+    <label>10メル：<input type="number" id="m10" min="0" value="0" oninput="calculate()"></label><br>
+    <label>20メル：<input type="number" id="m20" min="0" value="0" oninput="calculate()"></label><br>
+    <label>50メル：<input type="number" id="m50" min="0" value="0" oninput="calculate()"></label>
   </div>
 
-  <button onclick="calculate()">計算する</button>
+  <button onclick="resetAll()">リセット</button>
 
-  <div class="section">
+  <div class="section result">
     <h2>結果</h2>
-    <p>初期金額（お釣り）：<strong>2950</strong> メル</p>
-    <p>理論上の合計金額（初期 + 売上）：<span id="expected">0</span> メル</p>
-    <p>実際の金額（入力した合計）：<span id="actual">0</span> メル</p>
-    <p><strong>誤差：</strong><span id="difference">0</span> メル</p>
+    <p>初期金額（お釣り）：<span class="highlight">2950</span> メル</p>
+    <p>理論上の合計金額（初期 + 売上）：<span id="expected" class="highlight">0</span> メル</p>
+    <p>実際の金額（入力した合計）：<span id="actual" class="highlight">0</span> メル</p>
+    <p><strong>誤差：</strong><span id="difference" class="highlight">0</span> メル</p>
   </div>
 
   <script>
@@ -64,6 +70,19 @@
       document.getElementById("actual").textContent = actual;
       document.getElementById("difference").textContent = difference;
     }
+
+    function resetAll() {
+      document.getElementById("numPeople").value = 0;
+      document.getElementById("m1").value = 0;
+      document.getElementById("m5").value = 0;
+      document.getElementById("m10").value = 0;
+      document.getElementById("m20").value = 0;
+      document.getElementById("m50").value = 0;
+      calculate();
+    }
+
+    // 初期表示も0で出す
+    calculate();
   </script>
 
 </body>
