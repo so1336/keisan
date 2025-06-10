@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>メル 計算ツール（誤差判定付き）</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+    }
+    input {
+      width: 80px;
+      margin: 5px;
+    }
+    .section {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎪 メル 計算ツール</h1>
+
+  <div class="section">
+    <label>体験者の人数：</label>
+    <input type="number" id="numPeople" min="0" value="0">
+  </div>
+
+  <div class="section">
+    <p>クローズ時のメル通貨の枚数を入力：</p>
+    <label>1メル：<input type="number" id="m1" min="0" value="0"></label><br>
+    <label>5メル：<input type="number" id="m5" min="0" value="0"></label><br>
+    <label>10メル：<input type="number" id="m10" min="0" value="0"></label><br>
+    <label>20メル：<input type="number" id="m20" min="0" value="0"></label><br>
+    <label>50メル：<input type="number" id="m50" min="0" value="0"></label>
+  </div>
+
+  <button onclick="calculate()">計算する</button>
+
+  <div class="section">
+    <h2>結果</h2>
+    <p>初期金額（お釣り）：<strong>2950</strong> メル</p>
+    <p>理論上の合計金額（初期 + 売上）：<span id="expected">0</span> メル</p>
+    <p>実際の金額（入力した合計）：<span id="actual">0</span> メル</p>
+    <p><strong>誤差：</strong><span id="difference">0</span> メル</p>
+  </div>
+
+  <script>
+    function calculate() {
+      const numPeople = parseInt(document.getElementById("numPeople").value) || 0;
+      const initial = 2950;
+      const expected = initial + (numPeople * 8);
+
+      const m1 = parseInt(document.getElementById("m1").value) || 0;
+      const m5 = parseInt(document.getElementById("m5").value) || 0;
+      const m10 = parseInt(document.getElementById("m10").value) || 0;
+      const m20 = parseInt(document.getElementById("m20").value) || 0;
+      const m50 = parseInt(document.getElementById("m50").value) || 0;
+
+      const actual = m1 * 1 + m5 * 5 + m10 * 10 + m20 * 20 + m50 * 50;
+      const difference = actual - expected;
+
+      document.getElementById("expected").textContent = expected;
+      document.getElementById("actual").textContent = actual;
+      document.getElementById("difference").textContent = difference;
+    }
+  </script>
+
+</body>
+</html>
